@@ -10,4 +10,13 @@ public class Carro {
         this.color = color;
         this.tipo = tipo;
     }
+    public int getId() {
+        return this.id;
+    }
+    public String getColor() {
+        return this.color;
+    }
+    public String getTipo() {
+        return this.tipo;
+    }
 }
