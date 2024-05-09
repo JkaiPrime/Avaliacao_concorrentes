@@ -2,21 +2,29 @@ package Produtores;
 
 public class Operarios implements Runnable{
     protected String nome;
-    protected Ferramentas ferramenta;
+    protected Ferramentas ferramentaDireita;
+    protected Ferramentas ferramentaEsquerda;
     protected Sinaleiro sinaleiro;
 
-    public Operarios(String nome, Ferramentas ferramenta, Sinaleiro sinaleiro){
+    public Operarios(String nome, Ferramentas ferramentaDireita, Ferramentas ferramentaEsquerda, Sinaleiro sinaleiro){
         this.nome = nome;
-        this.ferramenta = ferramenta;
+        this.ferramentaDireita = ferramentaDireita;
+        this.ferramentaEsquerda = ferramentaEsquerda;
         this.sinaleiro = sinaleiro;
         Thread operario =  new Thread(this);
         operario.start();
     }
-    public void takeFerramenta() throws InterruptedException{
-        ferramenta.Acquire();
+    public void takeFerramentaDireita() throws InterruptedException{
+        ferramentaDireita.Acquire();
     }
-    public void releaseFerramenta(){
-        ferramenta.Release();
+    public void releaseFerramentaDireita(){
+        ferramentaDireita.Release();
+    }
+    public void takeFerramentaEsquerda() throws InterruptedException{
+        ferramentaDireita.Acquire();
+    }
+    public void releaseFerramentaEsquerda(){
+        ferramentaDireita.Release();
     }
     public void preOrder(){
         System.out.println("Operario "+ this.nome+" esta recebendo o pedido!");
@@ -29,9 +37,9 @@ public class Operarios implements Runnable{
         try {
             preOrder();
             sinaleiro.Acquire();
-            takeFerramenta();
+            takeFerramentaDireita();
             work();
-            releaseFerramenta();
+            releaseFerramentaDireita();
             sinaleiro.Release();
         } catch (InterruptedException e) {
             e.printStackTrace();
