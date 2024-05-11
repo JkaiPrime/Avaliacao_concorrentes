@@ -1,19 +1,21 @@
 package Outros;
 
+import java.awt.Color;
+
 public class Carro {
     int id;
-    String color;
+    Color color;
     String tipo;
 
-    public Carro(int id, String color, String tipo){
+    public Carro(int id, Color color2, String tipo){
         this.id = id;
-        this.color = color;
+        this.color = color2;
         this.tipo = tipo;
     }
     public int getId() {
         return this.id;
     }
-    public String getColor() {
+    public Color getColor() {
         return this.color;
     }
     public String getTipo() {

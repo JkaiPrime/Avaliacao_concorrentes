@@ -21,10 +21,10 @@ public class Operarios implements Runnable{
         ferramentaDireita.Release();
     }
     public void takeFerramentaEsquerda() throws InterruptedException{
-        ferramentaDireita.Acquire();
+        ferramentaEsquerda.Acquire();
     }
     public void releaseFerramentaEsquerda(){
-        ferramentaDireita.Release();
+        ferramentaEsquerda.Release();
     }
     public void preOrder(){
         System.out.println("Operario "+ this.nome+" esta recebendo o pedido!");

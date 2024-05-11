@@ -29,7 +29,7 @@ public class workStation {
     }
     public Carro produzir(){
         Ferramentas[] ferramentas = new Ferramentas[5];
-        Sinaleiro[] sinaleiro = new Sinaleiro[4];
+        Sinaleiro[] sinaleiro = new Sinaleiro[5];
             
             for (int i = 0; i < 5; i++) {
                 ferramentas[i] = new Ferramentas();
@@ -55,7 +55,7 @@ public class workStation {
             String tipo = random.nextBoolean() ? "sedan" : "suv"; // Escolhe aleatoriamente entre "sedan" e "suv"
             Color color = randomColor(); // Seleciona aleatoriamente uma das cores disponíveis
         
-            return new Carro(id, color.toString(), tipo);
+            return new Carro(id, color, tipo);
     }
     
 }
