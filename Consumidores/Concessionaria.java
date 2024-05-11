@@ -35,4 +35,6 @@ public class Concessionaria extends Thread {
     public int GetId() {
         return this.id;
     }
+
+
 }

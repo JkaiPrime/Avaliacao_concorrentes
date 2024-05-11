@@ -17,8 +17,8 @@ public class Fabrica {
     }
 
     public void produzir() {
-        while (true) {
-            Carro carro = workstations[0].produzir();
+        for (int i = 0; i < workstations.length; i++) {
+            Carro carro = workstations[i].produzir();
             try {
                 carsProduced.put(carro);
                 System.out.println("Produzido: " + carro.GetModelo());
