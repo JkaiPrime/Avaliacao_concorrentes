@@ -38,13 +38,14 @@ public class Operarios implements Runnable{
             preOrder();
             sinaleiro.Acquire();
             takeFerramentaDireita();
+            takeFerramentaEsquerda();
             work();
             releaseFerramentaDireita();
+            releaseFerramentaEsquerda();
             sinaleiro.Release();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         
     }
-    
 }

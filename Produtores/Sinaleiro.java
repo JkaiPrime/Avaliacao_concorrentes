@@ -9,8 +9,6 @@ public class Sinaleiro {
         semaphore = new Semaphore(1);
     }
     
-
-    
     public void Acquire() throws InterruptedException {
          semaphore.acquire();
     }

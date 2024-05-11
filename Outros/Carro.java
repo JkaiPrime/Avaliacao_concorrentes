@@ -12,13 +12,9 @@ public class Carro {
         this.color = color2;
         this.tipo = tipo;
     }
-    public int getId() {
-        return this.id;
-    }
-    public Color getColor() {
-        return this.color;
-    }
-    public String getTipo() {
-        return this.tipo;
+
+    public String GetModelo() {
+        String carro = "Carro: " + this.id + " Cor: " + this.color + " Tipo: " + this.tipo;
+        return carro;
     }
 }

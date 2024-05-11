@@ -35,7 +35,7 @@ public class workStation {
                 ferramentas[i] = new Ferramentas();
             }
 
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 5; i++) {
                 sinaleiro[i] = new Sinaleiro();
             }
             
