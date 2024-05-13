@@ -29,7 +29,7 @@ public class BufferCircular {
 		mutex.acquire();
 		buffer[entrada]= carro;
 		entrada = (entrada +1) % tamanho;
-		System.out.println("Produzido: " + carro);
+		System.out.println("Produzido: " + carro.GetModelo());
 		mutex.release();
 		cheio.release();
 	}
@@ -43,6 +43,8 @@ public class BufferCircular {
 	    System.out.println("Consumido: " + buffer[saida].GetModelo());
 	    mutex.release();
 	    vazio.release(); 
+		//Carro carro = buffer[saida];
+		//buffer[saida] = null;
 		return buffer[saida];
 	}
 

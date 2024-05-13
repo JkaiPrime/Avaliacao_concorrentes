@@ -44,7 +44,7 @@ public class Fabrica extends Thread{
                         Carro carro = workstations[j].produzir();
                         if (carro != null) {
                             carsProduced.produzirPeças(carro);
-                            System.out.println("Produzido: " + carro.GetModelo());
+                            //System.out.println("Produzido: " + carro.GetModelo());
                             Thread.sleep(250);
                         } 
                     } else {
