@@ -16,8 +16,6 @@ public class Fabrica extends Thread{
         }
     }
 
-
-
     public Boolean isCarsProducedFull(){
         return carsProduced.remainingCapacity() == 0;
     }

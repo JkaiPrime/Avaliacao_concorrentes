@@ -1,6 +1,4 @@
 package Outros;
-
-
 public class Carro {
     int id;
     String color;

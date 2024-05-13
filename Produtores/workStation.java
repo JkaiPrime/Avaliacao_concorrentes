@@ -22,7 +22,7 @@ public class workStation {
         }
 
         for (int i = 0; i < 5; i++) {
-            sinaleiro[i] = new Sinaleiro();
+            sinaleiro[i] = new Sinaleiro(1);
         }
 
         Operarios[] operarios = new Operarios[5];

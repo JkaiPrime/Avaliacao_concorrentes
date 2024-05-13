@@ -5,8 +5,8 @@ import java.util.concurrent.Semaphore;
 public class Sinaleiro {
     private Semaphore semaphore;
     
-    public Sinaleiro() {
-        semaphore = new Semaphore(1);
+    public Sinaleiro(int size) {
+        semaphore = new Semaphore(size);
     }
     
     public void Acquire() throws InterruptedException {
