@@ -22,7 +22,18 @@ public class BufferCircular {
 		cheio = new Semaphore(0);
 
 	}
+	public boolean isBufferCheio() {
+		return cheio.availablePermits()==0;
+	}
 	
+	public void removerTodosCarros() {
+		mutex.acquireUninterruptibly();
+		entrada = 0; // Reinicia o índice de entrada
+		saida = 0;   // Reinicia o índice de saída
+		mutex.release();
+		vazio.release(tamanho); // Libera todas as permissões do semáforo vazio
+		cheio.release();        // Libera todas as permissões do semáforo cheio
+	}
 	
 	public void produzirPeças(Carro carro) throws InterruptedException {
 		vazio.acquire();

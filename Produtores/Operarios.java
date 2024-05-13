@@ -1,57 +1,29 @@
 package Produtores;
 
-import java.util.Random;
+import java.util.concurrent.Semaphore;
 
-
-
-public class Operarios implements Runnable{
-    protected String nome;
-    protected Ferramentas ferramentaDireita;
-    protected Ferramentas ferramentaEsquerda;
-    protected Sinaleiro sinaleiro;
-    public Operarios(int nome, Ferramentas ferramentaDireita, Ferramentas ferramentaEsquerda, Sinaleiro sinaleiro){
-        String nome1 = Integer.toString(nome);
-        this.nome = nome1;
-        this.ferramentaDireita = ferramentaDireita;
-        this.ferramentaEsquerda = ferramentaEsquerda;
-        this.sinaleiro = sinaleiro;
-        Thread operario =  new Thread(this);
-        operario.start();
+public class Operarios extends Thread {
+    private int id;
+    private Semaphore mySemaphore;
+  
+    public Operarios(int id, Semaphore semaphore) {
+      this.id = id;
+      this.mySemaphore = semaphore;
     }
-    public void takeFerramentaDireita() throws InterruptedException{
-        ferramentaDireita.Acquire();
-    }
-    public void releaseFerramentaDireita(){
-        ferramentaDireita.Release();
-    }
-    public void takeFerramentaEsquerda() throws InterruptedException{
-        ferramentaEsquerda.Acquire();
-    }
-    public void releaseFerramentaEsquerda(){
-        ferramentaEsquerda.Release();
-    }
-    public void preOrder(){
-        //System.out.println("Operario "+ this.nome+" esta recebendo o pedido!");
-    }
-    public void work(){
-        //System.out.println("Operario "+ this.nome + " comecou a produzir!");
-    }
+  
     @Override
     public void run() {
-        try {
-            while(true){
-                preOrder();
-                sinaleiro.Acquire();
-                takeFerramentaDireita();
-                takeFerramentaEsquerda();
-                work();
-                releaseFerramentaDireita();
-                releaseFerramentaEsquerda();
-                sinaleiro.Release();
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        
+      try {
+        // Wait for your turn to use the tool (semaphore acquired in workstation)
+        mySemaphore.acquire();
+        // Simulate using the tool
+        System.out.println("Operario " + id + " is using the tool.");
+        Thread.sleep(500);
+        // Release the semaphore for the next operario
+        mySemaphore.release();
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
     }
-}
+  }
+  

@@ -17,8 +17,17 @@ public class Concessionaria extends Thread {
     }
 
     public void adicionarCarro(Carro carro) throws InterruptedException {
+        Carro carro1 = fabrica.fornecerCarro();
+        Carro carro2 = fabrica.fornecerCarro();
+        Carro carro3 = fabrica.fornecerCarro();
         carStock.put(carro);
+        carStock.put(carro1);
+        carStock.put(carro2);
+        carStock.put(carro3);
         System.out.println("Carro adicionado na concessionária: \n" + carro.GetModelo());
+        System.out.println("Carro adicionado na concessionária: \n" + carro1.GetModelo());
+        System.out.println("Carro adicionado na concessionária: \n" + carro2.GetModelo());
+        System.out.println("Carro adicionado na concessionária: \n" + carro3.GetModelo());
         //sleep(500);
     }
 

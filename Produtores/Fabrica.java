@@ -1,6 +1,7 @@
 package Produtores;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Semaphore;
 
 import Outros.BufferCircular;
 import Outros.Carro;
@@ -11,14 +12,16 @@ public class Fabrica extends Thread{
     BufferCircular carsProduced;
     private workStation[] workstations;
     private Storage stockMaterials;
+    protected Semaphore emptySlots;
 
     public Fabrica(int numWorkstations, Storage materials) {
         this.stockMaterials = materials;
         this.carsProduced = new BufferCircular(20);
         workstations = new workStation[numWorkstations];
         for (int i = 0; i < numWorkstations; i++) {
-            workstations[i] = new workStation(i);
+            workstations[i] = new workStation(i,5);
         }
+        
     }
 
 
@@ -45,8 +48,8 @@ public class Fabrica extends Thread{
                         if (carro != null) {
                             carsProduced.produzirPeças(carro);
                             //System.out.println("Produzido: " + carro.GetModelo());
-                            Thread.sleep(250);
-                        } 
+                            Thread.sleep(5000);
+                        }
                     } else {
                         System.out.println("O material acabou!");
                     }
