@@ -3,6 +3,7 @@ package Produtores;
 import java.util.Random;
 import java.awt.Color;
 import Outros.Carro;
+import Outros.Materials;
 
 /**
  * workStation
@@ -31,7 +32,7 @@ public class workStation {
             Ferramentas ferramentaEsquerda = ferramentas[(i + 1) % 5];
             operarios[i] = new Operarios(i, ferramentaDireita,ferramentaEsquerda,sinaleiro[i]);
         }
-                int id = random.nextInt(1000); // Gera um ID aleatório
+        int id = random.nextInt(1000); // Gera um ID aleatório
         String tipo = random.nextBoolean() ? "sedan" : "suv"; // Escolhe aleatoriamente entre "sedan" e "suv"
         //String color = randomColor().toString(); // Seleciona aleatoriamente uma das cores disponíveis
         String r = Integer.toString(random.nextInt(0,255));

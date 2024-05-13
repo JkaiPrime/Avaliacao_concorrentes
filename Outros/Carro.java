@@ -1,8 +1,8 @@
 package Outros;
 public class Carro {
-    int id;
-    String color;
-    String tipo;
+    private int id;
+    private String color;
+    private String tipo;
 
     public Carro(int id, String color2, String tipo){
         this.id = id;

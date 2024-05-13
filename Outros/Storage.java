@@ -28,4 +28,8 @@ public class Storage {
         sinaleiro.Release();
         return material;
     }
+
+    public int GetCountMaterials (){
+        return this.buffer.size();
+    }
 }
