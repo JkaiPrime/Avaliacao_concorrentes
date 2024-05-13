@@ -14,7 +14,7 @@ public class workStation {
     public workStation(int id){
         this.id = id;
     }
-    public Carro produzir(){
+    public synchronized Carro produzir(){
         Ferramentas[] ferramentas = new Ferramentas[5];
         Sinaleiro[] sinaleiro = new Sinaleiro[5];
             

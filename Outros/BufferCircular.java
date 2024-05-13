@@ -3,7 +3,7 @@ package Outros;
 import java.util.concurrent.Semaphore;
 
 public class BufferCircular {
-	private int[] buffer;
+	private Carro[] buffer;
 	private int tamanho;
 	private int entrada,saida;
 	
@@ -14,7 +14,7 @@ public class BufferCircular {
 	
 	public BufferCircular(int tamanho) {
 		this.tamanho = tamanho;
-		buffer= new int[tamanho];
+		buffer= new Carro[tamanho];
 		entrada =0;
 		saida = 0;
 		mutex = new Semaphore(5);
@@ -24,68 +24,29 @@ public class BufferCircular {
 	}
 	
 	
-	public void produzirPeças(int item) throws InterruptedException {
+	public void produzirPeças(Carro carro) throws InterruptedException {
 		vazio.acquire();
 		mutex.acquire();
-		buffer[entrada] = item;
+		buffer[entrada]= carro;
 		entrada = (entrada +1) % tamanho;
-		System.out.println("Produzido: " + item);
+		System.out.println("Produzido: " + carro);
 		mutex.release();
 		cheio.release();
 	}
 	
 	
-	public void consumirPeças() throws InterruptedException {
+	public Carro consumirPeças() throws InterruptedException {
 	    cheio.acquire(); 
-	    int item = buffer[saida];
+	    //int item = buffer[saida];
 	    mutex.acquire();
 	    saida = (saida + 1) % tamanho; 
-	    System.out.println("Consumido: " + item);
+	    System.out.println("Consumido: " + buffer[saida].GetModelo());
 	    mutex.release();
 	    vazio.release(); 
+		return buffer[saida];
 	}
 
 	
 
-}
-
-class Produtor extends Thread {
-	private BufferCircular buffer;
-	
-	public Produtor(BufferCircular buffer) {
-		this.buffer = buffer;
-	}
-	
-	@Override
-	public void run() {
-		try {
-			for(int i = 0; i < 10; i++) {
-				buffer.produzirPeças(i);
-				sleep(1000);
-			}
-		}catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-}
-
-class Consumidor extends Thread {
-	private BufferCircular buffer;
-	
-	public Consumidor(BufferCircular buffer) {
-		this.buffer = buffer;
-	}
-	
-	@Override
-	public void run() {
-		try {
-			for(int i = 0; i < 10; i++) {
-				buffer.consumirPeças();
-				sleep(1500);
-			}
-		}catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
 }
 
