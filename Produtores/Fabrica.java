@@ -4,7 +4,7 @@ import java.util.concurrent.BlockingQueue;
 
 import Outros.Carro;
 
-public class Fabrica {
+public class Fabrica extends Thread{
     private BlockingQueue<Carro> carsProduced;
     private workStation[] workstations;
 
@@ -12,20 +12,14 @@ public class Fabrica {
         this.carsProduced = new ArrayBlockingQueue<>(20);
         workstations = new workStation[numWorkstations];
         for (int i = 0; i < numWorkstations; i++) {
-            workstations[i] = new workStation();
+            workstations[i] = new workStation(i);
         }
     }
 
-    public void produzir() {
-        for (int i = 0; i < workstations.length; i++) {
-            Carro carro = workstations[i].produzir();
-            try {
-                carsProduced.put(carro);
-                System.out.println("Produzido: " + carro.GetModelo());
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
+
+
+    public Boolean isCarsProducedFull(){
+        return carsProduced.remainingCapacity() == 0;
     }
 
     public Carro fornecerCarro() throws InterruptedException {
@@ -36,4 +30,22 @@ public class Fabrica {
         return this.carsProduced.isEmpty();
     }
 
+    @Override
+    public void run() {
+        if (carsProduced.remainingCapacity()==0) {
+            System.out.println("Fabrica Cheia");
+        }else{
+            for (int j = 0; j < workstations.length; j++) {
+                Carro carro = workstations[j].produzir();
+                try {
+                    System.out.println("Fabrica:"+carsProduced.remainingCapacity());
+                    carsProduced.put(carro);
+                    System.out.println("Produzido: " + carro.GetModelo());
+                    Thread.sleep(250);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            } 
+        }
+    }
 }

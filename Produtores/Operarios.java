@@ -1,13 +1,17 @@
 package Produtores;
 
+import java.util.Random;
+
+
+
 public class Operarios implements Runnable{
     protected String nome;
     protected Ferramentas ferramentaDireita;
     protected Ferramentas ferramentaEsquerda;
     protected Sinaleiro sinaleiro;
-
-    public Operarios(String nome, Ferramentas ferramentaDireita, Ferramentas ferramentaEsquerda, Sinaleiro sinaleiro){
-        this.nome = nome;
+    public Operarios(int nome, Ferramentas ferramentaDireita, Ferramentas ferramentaEsquerda, Sinaleiro sinaleiro){
+        String nome1 = Integer.toString(nome);
+        this.nome = nome1;
         this.ferramentaDireita = ferramentaDireita;
         this.ferramentaEsquerda = ferramentaEsquerda;
         this.sinaleiro = sinaleiro;
@@ -27,22 +31,24 @@ public class Operarios implements Runnable{
         ferramentaEsquerda.Release();
     }
     public void preOrder(){
-        System.out.println("Operario "+ this.nome+" esta recebendo o pedido!");
+        //System.out.println("Operario "+ this.nome+" esta recebendo o pedido!");
     }
     public void work(){
-        System.out.println("Operario "+ this.nome + " comecou a produzir!");
+        //System.out.println("Operario "+ this.nome + " comecou a produzir!");
     }
     @Override
     public void run() {
         try {
-            preOrder();
-            sinaleiro.Acquire();
-            takeFerramentaDireita();
-            takeFerramentaEsquerda();
-            work();
-            releaseFerramentaDireita();
-            releaseFerramentaEsquerda();
-            sinaleiro.Release();
+            while(true){
+                preOrder();
+                sinaleiro.Acquire();
+                takeFerramentaDireita();
+                takeFerramentaEsquerda();
+                work();
+                releaseFerramentaDireita();
+                releaseFerramentaEsquerda();
+                sinaleiro.Release();
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
