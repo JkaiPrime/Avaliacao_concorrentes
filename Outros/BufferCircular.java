@@ -17,14 +17,14 @@ public class BufferCircular {
 		buffer= new Carro[tamanho];
 		entrada =0;
 		saida = 0;
-		mutex = new Semaphore(5);
+		mutex = new Semaphore(1);
 		vazio = new Semaphore(tamanho);
 		cheio = new Semaphore(0);
 
 	}
-	public boolean isBufferCheio() {
-		return cheio.availablePermits()==0;
-	}
+	// public boolean isBufferCheio() {
+	// 	return cheio.availablePermits()==0;
+	// }
 	
 	public void removerTodosCarros() {
 		mutex.acquireUninterruptibly();
@@ -50,13 +50,14 @@ public class BufferCircular {
 	    cheio.acquire(); 
 	    //int item = buffer[saida];
 	    mutex.acquire();
+        Carro c = buffer[saida];
 	    saida = (saida + 1) % tamanho; 
-	    System.out.println("Consumido: " + buffer[saida].GetModelo());
+	    System.out.println("Consumido: " + c.GetModelo());
 	    mutex.release();
 	    vazio.release(); 
 		//Carro carro = buffer[saida];
 		//buffer[saida] = null;
-		return buffer[saida];
+		return c;
 	}
 
 	
