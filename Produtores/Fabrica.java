@@ -3,7 +3,6 @@ package Produtores;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -18,9 +17,8 @@ public class Fabrica extends Thread {
     private workStation[] workstations;
     private Storage stockMaterials;
     protected Semaphore emptySlots;
-    private Socket socket;
     private ServerSocket serverSocket;
-        
+
     public Fabrica(int numWorkstations, Storage materials) throws IOException {
         this.stockMaterials = materials;
         this.carsProduced = new BufferCircular(40);
@@ -32,8 +30,8 @@ public class Fabrica extends Thread {
         serverSocket = new ServerSocket(4000);
     }
 
-    public void fornecerCarro(Socket clienSocket) throws InterruptedException, IOException {
-        ObjectOutputStream out = new ObjectOutputStream(clienSocket.getOutputStream()); // problema aqui
+    public void fornecerCarro(Socket clientSocket) throws InterruptedException, IOException {
+        ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream()); // Criação do ObjectOutputStream
         try {
             for (int j = 0; j < workstations.length; j++) {
                 Carro carro = workstations[j].produzir(this.stockMaterials);
@@ -41,8 +39,8 @@ public class Fabrica extends Thread {
                 Carro novoCarro = this.carsProduced.GetBuffer();
                 if (novoCarro != null) {
                     out.writeObject(novoCarro);
+                    out.flush();
                     System.out.println("Forneceu: " + novoCarro.GetModelo());
-
                     try (BufferedWriter fabricaLog = new BufferedWriter(new FileWriter("LogFabrica.txt", true))) {
                         fabricaLog.write("Modelo: " + carro.GetModelo() + "\nWorkstation: " + j);
                         fabricaLog.newLine();
@@ -54,6 +52,7 @@ public class Fabrica extends Thread {
             }
         } finally {
             out.close();
+            clientSocket.close();
         }
     }
 
@@ -61,20 +60,18 @@ public class Fabrica extends Thread {
     public void run() {
         while (true) {
             try {
-                socket = serverSocket.accept();
+                Socket clientSocket = serverSocket.accept();
                 if (this.stockMaterials.GetCountMaterials() > 0) {
                     try {
-                        System.out.println("tentando fornecer");
-                        fornecerCarro(socket);
-                        socket.close();
+                        System.out.println("Tentando fornecer");
+                        fornecerCarro(clientSocket);
                     } catch (Exception e) {
-                        // TODO: handle exception
+                        e.printStackTrace();
                     }
                 } else {
                     System.out.println("O material acabou!");
                 }
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }

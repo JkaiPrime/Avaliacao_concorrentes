@@ -17,51 +17,51 @@ public class Concessionaria extends Thread {
     private int id;
     private BlockingQueue<Carro> carStock;
     private Socket socket;
+    private ObjectInputStream in;
 
     public Concessionaria(int id, int capacidade) throws UnknownHostException, IOException {
         this.id = id;
         carStock = new ArrayBlockingQueue<>(capacidade);
-        socket = new Socket("localhost", 4000);
+        conectar();
+    }
+
+    private void conectar() throws IOException {
+        this.socket = new Socket("localhost", 4000);
+        this.in = new ObjectInputStream(socket.getInputStream());
     }
 
     public void adicionarCarro() throws InterruptedException, IOException, ClassNotFoundException {
-        try {
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream()); // problema aqui
-            Carro carro = (Carro) in.readObject();
-            if (carro == null) {
-                System.out.println("Carro Null"); return;
-            } else {
-                carStock.put(carro);
-                logConcessionariaCompra(carro);
-                System.out.println("Adicionou carro a concessionaria: " + this.id);
+            try {
+                Carro carro = (Carro) in.readObject();
+                if (carro != null) {
+                    carStock.put(carro);
+                    logConcessionariaCompra(carro);
+                    System.out.println("Adicionou carro a concessionaria: " + this.id);
+                }
+            } catch (SocketException e) {
+                System.err.println("Conexão com o servidor foi resetada: " + e.getMessage());
+                reconectar();
+            } catch (EOFException e) {
+                System.err.println("Fim dos dados obtidos da fabrica: " + e.getMessage());
+                reconectar();
             }
-        } catch (SocketException e) {
-            System.err.println("Conexão com o servidor foi resetada: " + e.getMessage());
-            reconectar();
-        } catch (EOFException e) {
-            System.err.println("Fim do fluxo de entrada alcançado prematuramente: " + e.getMessage());
-            reconectar();
-        }
     }
 
     private void logConcessionariaCompra(Carro carro) {
-        try {
-            BufferedWriter ConcessionariaLogCompras = new BufferedWriter(new FileWriter("ConcessionariaComprasLog.txt", true));
-            ConcessionariaLogCompras.write("Concessionaria:"+ id+ "\n"+ carro.GetModelo());
+        try (BufferedWriter ConcessionariaLogCompras = new BufferedWriter(new FileWriter("ConcessionariaComprasLog.txt", true))) {
+            ConcessionariaLogCompras.write("Concessionaria:" + id + "\n" + carro.GetModelo());
             ConcessionariaLogCompras.newLine();
-            ConcessionariaLogCompras.flush();
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     private void logConcessionariaVenda(Carro carro) {
-        try {
-            BufferedWriter ConcessionariaLogVendas = new BufferedWriter(new FileWriter("ConcessionariaVendasLog.txt", true));
-            ConcessionariaLogVendas.write("Concessionaria:"+ this.id+ "Vendeu:\n"+carro.GetModelo()+"para Cliente");
+        try (BufferedWriter ConcessionariaLogVendas = new BufferedWriter(new FileWriter("ConcessionariaVendasLog.txt", true))) {
+            ConcessionariaLogVendas.write("Concessionaria:" + this.id + " Vendeu:\n" + carro.GetModelo() + " para Cliente");
             ConcessionariaLogVendas.newLine();
-            ConcessionariaLogVendas.flush();
         } catch (Exception e) {
-            // TODO: handle exception
+            e.printStackTrace();
         }
     }
 
@@ -78,14 +78,23 @@ public class Concessionaria extends Thread {
     }
 
     private void reconectar() throws InterruptedException {
-        try {
-            sleep(1000);
-            this.socket.close();
-            this.socket = new Socket("localhost", 4000);
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-            System.out.println("Reconectado ao servidor.");
-        } catch (IOException e) {
-            System.err.println("Falha ao reconectar: " + e.getMessage());
+        while (true) {
+            try {
+                Thread.sleep(1000);
+                if (socket != null) {
+                    socket.close();
+                }
+                conectar();
+                System.out.println("Reconectado ao servidor.");
+                break; // Saia do loop se reconectado com sucesso
+            } catch (IOException e) {
+                System.err.println("Falha ao reconectar: " + e.getMessage());
+                // Continuar no loop até conseguir reconectar
+            } catch (InterruptedException e) {
+                System.err.println("Reconexão interrompida: " + e.getMessage());
+                Thread.currentThread().interrupt();
+                break; // Se a thread for interrompida, saia do loop
+            }
         }
     }
 
@@ -94,19 +103,12 @@ public class Concessionaria extends Thread {
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         while (true) {
             try {
                 adicionarCarro();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
+            } catch (InterruptedException | ClassNotFoundException | IOException e) {
                 e.printStackTrace();
             }
         }
@@ -119,5 +121,4 @@ public class Concessionaria extends Thread {
     public int GetId() {
         return this.id;
     }
-
 }
