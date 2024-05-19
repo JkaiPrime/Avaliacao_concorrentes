@@ -30,26 +30,31 @@ public class Fabrica extends Thread {
         serverSocket = new ServerSocket(4000);
     }
 
-    public void fornecerCarro(Socket clientSocket) throws InterruptedException, IOException {
-        ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream()); // Criação do ObjectOutputStream
+    private void fornecerCarros(Socket clientSocket) throws InterruptedException, IOException {
+        ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
+
         try {
-            for (int j = 0; j < workstations.length; j++) {
-                Carro carro = workstations[j].produzir(this.stockMaterials);
-                this.carsProduced.SetBuffer(carro);
-                Carro novoCarro = this.carsProduced.GetBuffer();
-                if (novoCarro != null) {
-                    out.writeObject(novoCarro);
-                    out.flush();
-                    System.out.println("Forneceu: " + novoCarro.GetModelo());
-                    try (BufferedWriter fabricaLog = new BufferedWriter(new FileWriter("LogFabrica.txt", true))) {
-                        fabricaLog.write("Modelo: " + carro.GetModelo() + "\nWorkstation: " + j);
-                        fabricaLog.newLine();
+            while (true) {
+                for (int j = 0; j < workstations.length; j++) {
+                    Carro carro = workstations[j].produzir(this.stockMaterials);
+                    this.carsProduced.SetBuffer(carro);
+                    Carro novoCarro = this.carsProduced.GetBuffer();
+                    if (novoCarro != null) {
+                        out.writeObject(novoCarro);
+                        out.flush();
+                        System.out.println("Forneceu: " + novoCarro.GetModelo());
+                        try (BufferedWriter fabricaLog = new BufferedWriter(new FileWriter("LogFabrica.txt", true))) {
+                            fabricaLog.write("Modelo: " + carro.GetModelo() + "\nWorkstation: " + j);
+                            fabricaLog.newLine();
+                        }
+                    } else {
+                        System.out.println("Carro não produzido");
                     }
-                } else {
-                    System.out.println("Carro não produzido");
-                    return;
                 }
+                Thread.sleep(1000); // Simula intervalo de tempo entre produções
             }
+        } catch (IOException e) {
+            System.out.println("Conexão com a concessionária perdida: " + e.getMessage());
         } finally {
             out.close();
             clientSocket.close();
@@ -61,16 +66,13 @@ public class Fabrica extends Thread {
         while (true) {
             try {
                 Socket clientSocket = serverSocket.accept();
-                if (this.stockMaterials.GetCountMaterials() > 0) {
+                new Thread(() -> {
                     try {
-                        System.out.println("Tentando fornecer");
-                        fornecerCarro(clientSocket);
-                    } catch (Exception e) {
+                        fornecerCarros(clientSocket);
+                    } catch (InterruptedException | IOException e) {
                         e.printStackTrace();
                     }
-                } else {
-                    System.out.println("O material acabou!");
-                }
+                }).start();
             } catch (IOException e) {
                 e.printStackTrace();
             }

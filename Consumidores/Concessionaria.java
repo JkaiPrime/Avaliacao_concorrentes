@@ -31,6 +31,7 @@ public class Concessionaria extends Thread {
     }
 
     public void adicionarCarro() throws InterruptedException, IOException, ClassNotFoundException {
+        while (true) {
             try {
                 Carro carro = (Carro) in.readObject();
                 if (carro != null) {
@@ -38,13 +39,13 @@ public class Concessionaria extends Thread {
                     logConcessionariaCompra(carro);
                     System.out.println("Adicionou carro a concessionaria: " + this.id);
                 }
-            } catch (SocketException e) {
-                System.err.println("Conexão com o servidor foi resetada: " + e.getMessage());
+            } catch (SocketException | EOFException e) {
+                System.err.println("Erro de conexão: " + e.getMessage());
                 reconectar();
-            } catch (EOFException e) {
-                System.err.println("Fim dos dados obtidos da fabrica: " + e.getMessage());
-                reconectar();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
+        }
     }
 
     private void logConcessionariaCompra(Carro carro) {
@@ -101,16 +102,9 @@ public class Concessionaria extends Thread {
     @Override
     public void run() {
         try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
+            adicionarCarro();
+        } catch (InterruptedException | ClassNotFoundException | IOException e) {
             e.printStackTrace();
-        }
-        while (true) {
-            try {
-                adicionarCarro();
-            } catch (InterruptedException | ClassNotFoundException | IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -121,4 +115,5 @@ public class Concessionaria extends Thread {
     public int GetId() {
         return this.id;
     }
+
 }
