@@ -1,7 +1,5 @@
 package Produtores;
 
-import java.util.concurrent.Semaphore;
-
 public class Operarios implements Runnable{
   protected int nome;
   protected Ferramentas ferramentaDireita;

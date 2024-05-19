@@ -1,13 +1,10 @@
 package Produtores;
 
 import java.util.Random;
-import java.util.concurrent.Semaphore;
-import java.awt.Color;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
 import Outros.Carro;
-import Outros.Materials;
 import Outros.Storage;
 
 /**
@@ -58,7 +55,7 @@ public class workStation {
         workstationsLog.newLine();
         workstationsLog.flush();
       } catch (Exception e) {
-        // TODO: handle exception
+        
       }
       return carro;
     }

@@ -35,7 +35,7 @@ public class BufferCircular {
 		cheio.release();        // Libera todas as permissões do semáforo cheio
 	}
 	
-	public void produzirPeças(Carro carro) throws InterruptedException {
+	public void SetBuffer(Carro carro) throws InterruptedException {
 		vazio.acquire();
 		mutex.acquire();
 		buffer[entrada]= carro;
@@ -46,7 +46,7 @@ public class BufferCircular {
 	}
 	
 	
-	public Carro consumirPeças() throws InterruptedException {
+	public Carro GetBuffer() throws InterruptedException {
 	    cheio.acquire(); 
 	    //int item = buffer[saida];
 	    mutex.acquire();

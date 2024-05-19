@@ -33,7 +33,7 @@ public class Cliente extends Thread {
                         Carro carro = concessionaria.venderCarro();
                         garagem.add(carro);
                         BufferedWriter workstationsLog = new BufferedWriter(new FileWriter("ClientLog.txt", true));
-                        workstationsLog.write("Client:"+ this.id+"Comprou o carro"+ carro.GetModelo() + "\n" + garagem.size()+ "\nConcessionária: " + concessionaria.GetId());
+                        workstationsLog.write("Cliente: "+ this.id+" Comprou o carro"+ carro.GetModelo() + "\n" + garagem.size()+ "\nConcessionária: " + concessionaria.GetId());
                         workstationsLog.newLine();
                         workstationsLog.flush();
                     } catch (Exception e) {
@@ -41,7 +41,7 @@ public class Cliente extends Thread {
                     }      
                     Thread.sleep(new Random().nextInt(500));
                 } else {
-                    System.out.println(id + " não encontrou carros na concessionária, vai verificar mais tarde.");
+                    System.out.println("Cliente: " + id + " não encontrou carros na concessionária, vai verificar mais tarde.");
                     Thread.sleep(15000);
                 }
             } catch (InterruptedException e) {
